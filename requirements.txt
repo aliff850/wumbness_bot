@@ -1,0 +1,10 @@
+fastapi
+uvicorn
+pydantic
+tensorflow
+joblib
+numpy
+discord.py
+python-telegram-bot
+httpx
+python-dotenv
