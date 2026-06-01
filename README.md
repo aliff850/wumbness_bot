@@ -1,5 +1,10 @@
 # Wumbness Cyberbullying Detection API & Chatbots
 
+<div align="center" >
+  <img width="120" height="148" alt="WumboHappi" src="https://github.com/user-attachments/assets/560ed94e-7cbe-4eaa-a1a4-ecfe7a3c7a39" />
+  <img width="450" height="146" alt="WumbnessFullLogo" src="https://github.com/user-attachments/assets/44013cdd-1c55-42e8-b5bb-a10fd6285d48" />
+</div>
+<br>
 This project is part of our CAI20303 Machine Learning final project where we developed a machine learning solution for cyberbullying detection known as "Wumbness". This project provides a fully decoupled deployment suite for a bidirectional LSTM model trained on the Jigsaw cyberbullying dataset. The setup wraps the model in a FastAPI inference service and connects both a Discord bot and a Telegram bot as lightweight client services.
 
 ---
