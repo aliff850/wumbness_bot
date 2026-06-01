@@ -57,7 +57,7 @@ pip install -r requirements.txt
 ```
 
 ### 2. Configure Credentials (`.env`)
-Create/edit the `.env` file under `finalproj/` with your bot tokens and configurations:
+Create/edit the `.env` file under the project directory with your bot tokens and configurations:
 
 ```env
 # Discord Token (obtain from Discord Developer Portal)
