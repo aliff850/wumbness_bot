@@ -11,7 +11,7 @@ load_dotenv(dotenv_path)
 
 # Discord bot token
 DISCORD_TOKEN = os.getenv("DISCORD_TOKEN")
-API_URL = os.getenv("API_URL", "http://127.0.0.1:8000/predict")
+API_URL = os.getenv("API_URL", "https://wumbness-api.onrender.com/predict")
 
 intents = discord.Intents.default()
 intents.message_content = True  # Required to read text message contents
@@ -36,7 +36,7 @@ async def on_message(message):
 
     async with httpx.AsyncClient() as client:
         try:
-            response = await client.post(API_URL, json={"text": message.content}, timeout=5.0)
+            response = await client.post(API_URL, json={"text": message.content}, timeout=60.0)
             if response.status_code == 200:
                 data = response.json()
                 if data["is_cyberbullying"]:
