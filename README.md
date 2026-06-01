@@ -51,7 +51,7 @@ finalproj/
 ## 🚀 Setup & Execution
 
 ### 1. Installation
-Ensure you are in the `finalproj/` directory, then install the dependencies:
+Install all the dependencies:
 ```bash
 pip install -r requirements.txt
 ```
