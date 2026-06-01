@@ -49,6 +49,9 @@ class CyberbullyingPredictor:
         self.labels = ['toxic', 'severe_toxic', 'obscene', 'threat', 'insult', 'identity_hate']
         self.max_len = 150
 
+        self.num_words = 10000 
+        self.oov_token_id = self.word_index.get("<OOV>")
+
     def texts_to_sequences(self, text: str) -> list:
         """
         Pure Python implementation of Keras texts_to_sequences
@@ -62,7 +65,17 @@ class CyberbullyingPredictor:
         sequence = []
         for word in words:
             if word in self.word_index:
-                sequence.append(self.word_index[word])
+                idx = self.word_index[word]
+                
+                # Only add the word if its index is within our Embedding limits
+                if idx < self.num_words:
+                    sequence.append(idx)
+                elif self.oov_token_id is not None:
+                    # If it exceeds the limit but we have an OOV token, use OOV
+                    sequence.append(self.oov_token_id)
+            elif self.oov_token_id is not None:
+                # If the word isn't in the dictionary at all, use OOV
+                sequence.append(self.oov_token_id)
         return [sequence] # Return as a list of sequences to match batch format
 
     def predict(self, text: str) -> dict:
