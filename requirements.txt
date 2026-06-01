@@ -1,7 +1,7 @@
 fastapi
 uvicorn
 pydantic
-tensorflow
+onnxruntime
 joblib
 numpy
 discord.py

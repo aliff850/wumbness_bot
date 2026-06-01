@@ -21,8 +21,10 @@ app = FastAPI(
 )
 
 # MODEL_PATH = os.getenv("MODEL_PATH", "optimized_nostop_bidirectional_lstm_model.keras")
-MODEL_PATH = os.getenv("MODEL_PATH", "optimized_nostop_bidirectional_lstm_model_10epoch.keras")
-TOKENIZER_PATH = os.getenv("TOKENIZER_PATH", "keras_tokenizer_v2.pkl")
+# MODEL_PATH = os.getenv("MODEL_PATH", "optimized_nostop_bidirectional_lstm_model_10epoch.keras")
+# MODEL_PATH = os.getenv("MODEL_PATH", "optimized_nostop_bidirectional_lstm_model_10epoch.tflite")
+MODEL_PATH = os.getenv("MODEL_PATH", "optimized_nostop_bidirectional_lstm_model_10epoch.onnx")
+TOKENIZER_PATH = os.getenv("TOKENIZER_PATH", "word_index.json")
 
 # Initialize global predictor
 predictor = None
