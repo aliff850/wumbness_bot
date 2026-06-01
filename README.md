@@ -94,6 +94,29 @@ In separate terminal sessions, start the bots:
 
 ---
 
+## 🤖 Bot Operations & Workflows
+
+Both chat bots are designed to intercept user messages asynchronously and query the central FastAPI backend to check for toxicity levels without blocking the chat.
+
+### Discord Bot (`bots/discord_bot.py`)
+*   **Library**: `discord.py`
+*   **Gateway Intent**: Requires the **Message Content Intent** enabled in your Discord Developer Portal.
+*   **Flow**:
+    1. Listens to text message events on the server through `on_message`.
+    2. Ignores its own messages to prevent warning loops.
+    3. Posts the message content asynchronously to `http://localhost:8000/predict` using `httpx`.
+    4. If the response flags the message (`is_cyberbullying: true`), it issues a warning in the same channel, mentioning the author and listing the offending categories.
+
+### Telegram Bot (`bots/telegram_bot.py`)
+*   **Library**: `python-telegram-bot`
+*   **Flow**:
+    1. Uses long-polling via `Application.run_polling()` to fetch incoming Telegram updates.
+    2. Uses a `MessageHandler` configured with text filters to capture group chat text while ignoring command messages (like `/start`).
+    3. Forwards text payloads to the FastAPI prediction endpoint using `httpx`.
+    4. If flagged as cyberbullying, it replies directly to the offending message in the group chat notifying the user.
+
+---
+
 ## 🔒 API Endpoints
 
 ### `POST /predict`
