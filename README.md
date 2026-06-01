@@ -50,11 +50,37 @@ finalproj/
 
 ## 🚀 Setup & Execution
 
-### 1. Installation
-Install all the dependencies:
-```bash
-pip install -r requirements.txt
-```
+### 1. Virtual Environment & Installation
+
+Create a virtual environment using Python 3.10 to 3.13 (TensorFlow does not currently support Python 3.14+).
+
+#### Option A: Using `uv` (Recommended)
+1. Create a virtual environment using Python 3.13:
+   ```bash
+   uv venv --python 3.13
+   ```
+2. Activate the virtual environment:
+   * **PowerShell**: `.venv\Scripts\activate`
+   * **Cmd**: `.venv\Scripts\activate.bat`
+   * **Bash/Zsh**: `source .venv/bin/activate`
+3. Install dependencies:
+   ```bash
+   uv pip install -r requirements.txt
+   ```
+
+#### Option B: Using standard Python & `pip`
+1. Create a virtual environment (ensure you are using Python 3.10 - 3.13):
+   ```bash
+   python -m venv .venv
+   ```
+2. Activate the virtual environment:
+   * **PowerShell**: `.venv\Scripts\Activate.ps1`
+   * **Cmd**: `.venv\Scripts\activate.bat`
+   * **Bash/Zsh**: `source .venv/bin/activate`
+3. Install dependencies:
+   ```bash
+   pip install -r requirements.txt
+   ```
 
 ### 2. Configure Credentials (`.env`)
 Create/edit the `.env` file under the project directory with your bot tokens and configurations:
@@ -74,9 +100,16 @@ TOKENIZER_PATH=keras_tokenizer.pkl
 
 ### 3. Start the Inference Server
 Run the FastAPI application locally using Uvicorn:
-```bash
-uvicorn api.main:app --reload --port 8000
-```
+
+* **Using `uv`:**
+  ```bash
+  uv run uvicorn api.main:app --reload --port 8000
+  ```
+* **Using standard activated environment:**
+  ```bash
+  uvicorn api.main:app --reload --port 8000
+  ```
+
 - Access the API homepage at: `http://127.0.0.1:8000/`
 - Test predictions using the interactive Swagger UI: `http://127.0.0.1:8000/docs`
 
@@ -84,13 +117,11 @@ uvicorn api.main:app --reload --port 8000
 In separate terminal sessions, start the bots:
 
 - **Discord Bot**:
-  ```bash
-  python bots/discord_bot.py
-  ```
+  * **Using `uv`:** `uv run python bots/discord_bot.py`
+  * **Using activated env:** `python bots/discord_bot.py`
 - **Telegram Bot**:
-  ```bash
-  python bots/telegram_bot.py
-  ```
+  * **Using `uv`:** `uv run python bots/telegram_bot.py`
+  * **Using activated env:** `python bots/telegram_bot.py`
 
 ---
 
