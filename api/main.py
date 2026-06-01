@@ -3,40 +3,35 @@ import sys
 from fastapi import FastAPI, HTTPException
 from dotenv import load_dotenv
 
-# Ensure the parent directory is in python path to resolve api module imports
-base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+# 1. Fix Directory Traversal: Only go up ONE level because 'api' is the root
+base_dir = os.path.dirname(os.path.abspath(__file__))
 if base_dir not in sys.path:
     sys.path.append(base_dir)
 
-# Load .env file
+# Load .env file (Works locally, safely ignored on Vercel)
 dotenv_path = os.path.join(base_dir, ".env")
 load_dotenv(dotenv_path)
 
-from api.schemas import PredictionRequest, PredictionResponse
-from api.predictor import CyberbullyingPredictor
+# 2. Fix Imports: Remove the 'api.' prefix since we are already inside the api folder
+from schemas import PredictionRequest, PredictionResponse
+from predictor import CyberbullyingPredictor
 
 app = FastAPI(
     title="Cyberbullying Detection API",
     description="A FastAPI server running a bidirectional LSTM model to classify cyberbullying."
 )
 
-# MODEL_PATH = os.getenv("MODEL_PATH", "optimized_nostop_bidirectional_lstm_model.keras")
-# MODEL_PATH = os.getenv("MODEL_PATH", "optimized_nostop_bidirectional_lstm_model_10epoch.keras")
-# MODEL_PATH = os.getenv("MODEL_PATH", "optimized_nostop_bidirectional_lstm_model_10epoch.tflite")
-MODEL_PATH = os.getenv("MODEL_PATH", "api/models/optimized_nostop_bidirectional_lstm_model_10epoch.onnx")
-TOKENIZER_PATH = os.getenv("TOKENIZER_PATH", "api/models/word_index.json")
+# 3. Fix Paths: Remove 'api/' prefix and dynamically map them to the models subfolder
+MODEL_PATH = os.getenv("MODEL_PATH", os.path.join(base_dir, "models", "optimized_nostop_bidirectional_lstm_model_10epoch.onnx"))
+TOKENIZER_PATH = os.getenv("TOKENIZER_PATH", os.path.join(base_dir, "models", "word_index.json"))
 
-# Initialize global predictor
-predictor = None
-
-@app.on_event("startup")
-def load_model():
-    global predictor
-    try:
-        predictor = CyberbullyingPredictor(MODEL_PATH, TOKENIZER_PATH)
-        print("Model and Tokenizer loaded successfully!")
-    except Exception as e:
-        print(f"Failed to load model/tokenizer during startup: {e}")
+# 4. Serverless Initialization: Load globally instead of using @app.on_event("startup")
+try:
+    predictor = CyberbullyingPredictor(MODEL_PATH, TOKENIZER_PATH)
+    print("Model and Tokenizer loaded successfully!")
+except Exception as e:
+    print(f"Failed to load model/tokenizer during cold start: {e}")
+    predictor = None
 
 @app.get("/")
 def read_root():
@@ -49,7 +44,7 @@ def health_check():
 @app.post("/predict", response_model=PredictionResponse)
 def predict(request: PredictionRequest):
     if predictor is None:
-        raise HTTPException(status_code=503, detail="Model is not loaded yet")
+        raise HTTPException(status_code=503, detail="Model is not loaded yet or failed to initialize.")
     
     try:
         predictions = predictor.predict(request.text)

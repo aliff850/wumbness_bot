@@ -28,7 +28,7 @@ def pad_sequences(sequences, maxlen, padding='post', truncating='post', value=0)
 
 class CyberbullyingPredictor:
     def __init__(self, model_path: str, tokenizer_path: str):
-        base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+        base_dir = os.path.dirname(os.path.abspath(__file__))
 
         if not os.path.isabs(model_path):
             model_path = os.path.abspath(os.path.join(base_dir, model_path))
