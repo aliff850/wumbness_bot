@@ -9,6 +9,7 @@ base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 dotenv_path = os.path.join(base_dir, ".env")
 load_dotenv(dotenv_path)
 
+# Discord bot token
 DISCORD_TOKEN = os.getenv("DISCORD_TOKEN")
 API_URL = os.getenv("API_URL", "http://127.0.0.1:8000/predict")
 
