@@ -2,3 +2,4 @@ discord.py
 python-telegram-bot
 httpx
 python-dotenv
+supabase
