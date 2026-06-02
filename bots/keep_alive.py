@@ -7,6 +7,10 @@ class SimpleHTTPRequestHandler(BaseHTTPRequestHandler):
         self.send_response(200)
         self.end_headers()
         self.wfile.write(b"Discord Bot is online and listening.")
+# Add this new method to handle monitor pings
+    def do_HEAD(self):
+        self.send_response(200)
+        self.end_headers()
 
 def run_server():
     # Render assigns a port dynamically, default to 8080 locally
