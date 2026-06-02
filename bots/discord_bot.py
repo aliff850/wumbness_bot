@@ -3,6 +3,7 @@ import discord
 from discord.ext import commands
 import httpx
 from dotenv import load_dotenv
+from keep_alive import keep_alive
 
 # Load environmental variables from the finalproj directory
 base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -54,6 +55,7 @@ async def on_message(message):
 
 if __name__ == "__main__":
     if not DISCORD_TOKEN or DISCORD_TOKEN == "your_discord_token_here":
-        print("Error: DISCORD_TOKEN not set in finalproj/.env")
+        print("Error: DISCORD_TOKEN not set")
     else:
+        keep_alive()
         bot.run(DISCORD_TOKEN)
