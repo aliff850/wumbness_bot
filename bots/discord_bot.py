@@ -54,7 +54,8 @@ async def on_message(message):
                         supabase.table("warnings").insert({
                             "user_id": str(message.author.id),
                             "username": str(message.author.name),
-                            "categories": categories
+                            "categories": categories,
+                            "message_content": message.content  # <-- ADD THIS LINE
                         }).execute()
                     except Exception as e:
                         print(f"Failed to log to Supabase: {e}")

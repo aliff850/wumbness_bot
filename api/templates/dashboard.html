@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wumbness Moderation Dashboard</title>
+    <!-- Use Tailwind CSS for instant modern styling -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Custom scrollbar for better aesthetics */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
+    </style>
+</head>
+
+<body class="bg-slate-50 text-slate-800 font-sans antialiased">
+
+    <!-- Navigation Bar -->
+    <nav class="bg-indigo-600 text-white shadow-md">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <div class="flex items-center space-x-3">
+                    <!-- <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                        xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 11.955 0 0112 2.944a11.955 11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z">
+                        </path>
+                    </svg> -->
+                    <span class="font-bold text-xl tracking-tight">Wumbness Mod Panel</span>
+                </div>
+                <div>
+                    <span
+                        class="bg-indigo-800 text-xs px-3 py-1 rounded-full font-semibold border border-indigo-500">Live
+                        Database</span>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content Area -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+
+        <div class="mb-8">
+            <h1 class="text-3xl font-extrabold text-slate-900">Flagged Messages</h1>
+            <p class="mt-2 text-sm text-slate-600">Review messages flagged by the Bidirectional LSTM model. Mark false
+                positives to remove the penalty from the user's record.</p>
+        </div>
+
+        <!-- Warning Cards Grid -->
+        <div class="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+
+            <!-- Jinja2 Loop: Iterate through the warnings passed from FastAPI -->
+            {% if warnings %}
+            {% for warning in warnings %}
+            <div
+                class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden hover:shadow-md transition-shadow duration-200 flex flex-col">
+
+                <!-- Card Header (User Info & Time) -->
+                <div class="px-5 py-4 border-b border-slate-100 bg-slate-50/50 flex justify-between items-start">
+                    <div>
+                        <p class="text-sm font-semibold text-slate-900">@{{ warning.username }}</p>
+                        <p class="text-xs text-slate-500 mt-0.5">ID: {{ warning.user_id }}</p>
+                    </div>
+                    <!-- Format the timestamp safely -->
+                    <span
+                        class="text-xs font-medium text-slate-500 bg-white px-2 py-1 rounded-md border border-slate-200 shadow-sm">
+                        {{ warning.timestamp[:10] if warning.timestamp else 'Unknown Date' }}
+                    </span>
+                </div>
+
+                <!-- Card Body (Message Content & Categories) -->
+                <div class="p-5 flex-grow">
+                    <div class="mb-4">
+                        <h3 class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Message Content</h3>
+                        <div
+                            class="bg-slate-50 rounded-lg p-3 border border-slate-100 text-sm text-slate-700 italic relative">
+                            <span class="absolute top-2 left-2 text-slate-300">"</span>
+                            <p class="relative z-10 pl-3">
+                                <!-- Display the actual message text -->
+                                {{ warning.message_content if warning.message_content else 'Message text not captured by
+                                older bot version.' }}
+                            </p>
+                        </div>
+                    </div>
+
+                    <div>
+                        <h3 class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Flagged Categories
+                        </h3>
+                        <div class="flex flex-wrap gap-1.5">
+                            <!-- Split the comma-separated categories and display as badges -->
+                            {% set cats = warning.categories.split(',') %}
+                            {% for cat in cats %}
+                            <span
+                                class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-red-100 text-red-800">
+                                {{ cat.strip() }}
+                            </span>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Card Footer (Action Buttons) -->
+                <div class="px-5 py-4 bg-slate-50 border-t border-slate-100 mt-auto">
+                    <form action="/dashboard/resolve/{{ warning.id }}" method="post" class="w-full">
+                        <button type="submit"
+                            onclick="return confirm('Are you sure you want to mark this as a false positive? This will delete the warning record.');"
+                            class="w-full flex justify-center items-center gap-2 bg-white text-slate-700 hover:text-green-700 hover:bg-green-50 border border-slate-300 hover:border-green-300 font-semibold py-2 px-4 rounded-lg shadow-sm transition-colors duration-200 text-sm">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                                xmlns="http://www.w3.org/2000/svg">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M5 13l4 4L19 7"></path>
+                            </svg>
+                            Mark as False Positive
+                        </button>
+                    </form>
+                </div>
+
+            </div>
+            {% endfor %}
+            {% else %}
+            <!-- Empty State -->
+            <div class="col-span-full py-12 text-center bg-white rounded-xl border border-dashed border-slate-300">
+                <svg class="mx-auto h-12 w-12 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"
+                    aria-hidden="true">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                <h3 class="mt-2 text-sm font-medium text-slate-900">No warnings found</h3>
+                <p class="mt-1 text-sm text-slate-500">The server is currently clean. No messages require moderation.
+                </p>
+            </div>
+            {% endif %}
+
+        </div>
+    </main>
+
+</body>
+
+</html>

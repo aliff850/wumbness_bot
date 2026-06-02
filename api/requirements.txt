@@ -4,3 +4,5 @@ onnxruntime
 numpy
 python-dotenv
 uvicorn
+jinja2
+supabase
