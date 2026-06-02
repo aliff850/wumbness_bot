@@ -130,8 +130,12 @@ async def server_stats(ctx):
     await ctx.send(embed=embed)
 
 @bot.command(name="history")
-async def check_user(ctx, member: discord.Member):
+async def check_user(ctx, member: discord.Member = None):
     """Checks the warning history of a specific user with dynamic color styling."""
+    
+    # If no one is tagged, default to the person who sent the command
+    if member is None:
+        member = ctx.author
     
     response = supabase.table("warnings") \
         .select("categories, timestamp") \
