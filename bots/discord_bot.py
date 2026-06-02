@@ -5,6 +5,7 @@ import httpx
 from dotenv import load_dotenv
 from supabase import create_client, Client
 from collections import Counter
+from keep_alive import keep_alive
 
 # Load environmental variables
 base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
